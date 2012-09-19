@@ -41,33 +41,42 @@ In this small talk, I will introduce a new component, the ZHighCharts, based on 
 
 <h3>Component Usage</h3>
 
-<p>To create a chart, four steps are required:
-1. Add zhighcharts-0.1.1.jar to the directory WEB-INF/lib
-2. Add the ZHighCharts component to the ZUL file</p>
+<p>To create a chart, four steps are required:</p>
 
-<blockquote>
-<p>
-3. Initialize and configure the component in the controller 
-ZHighCharts chartComp;</p>
+<p>1) Add zhighcharts-0.1.1.jar to the directory WEB-INF/lib</p>
 
-<p>chartComp = (ZHighCharts) getFellow("chartComp");
-chartComp.setTitle("My first ZHighChart chart");
-chartComp.setType("line");
-4. Add some data
-SimpleExtXYModel dataChartModel = new SimpleExtXYModel();</p>
+<p>2) Add the ZHighCharts component to the ZUL file</p>
 
-<p>chartComp.setModel(dataChartModel);</p>
+<p><code>&lt;zhighcharts id="chartComp" /&gt;</code></p>
 
-<p>dataChartModel.addValue("Chart 1", 0, 7);
-dataChartModel.addValue("Chart 1", 1, 4);
-dataChartModel.addValue("Chart 1", 2, 9);
-dataChartModel.addValue("Chart 1", 3, 5);</p>
-</blockquote>
+<p>3) Initialize and configure the component in the controller </p>
+
+<p><code>ZHighCharts chartComp;</code></p>
+
+<p><code>chartComp = (ZHighCharts) getFellow("chartComp");</code></p>
+
+<p><code>chartComp.setTitle("My first ZHighChart chart");</code></p>
+
+<p><code>chartComp.setType("line");</code></p>
+
+<p>4) Add some data</p>
+
+<p><code>SimpleExtXYModel dataChartModel = new SimpleExtXYModel();</code></p>
+
+<p><code>chartComp.setModel(dataChartModel);</code></p>
+
+<p><code>dataChartModel.addValue("Chart 1", 0, 7);</code></p>
+
+<p><code>dataChartModel.addValue("Chart 1", 1, 4);</code></p>
+
+<p><code>dataChartModel.addValue("Chart 1", 2, 9);</code></p>
+
+<p><code>dataChartModel.addValue("Chart 1", 3, 5);</code></p>
 
 <h2>Licence</h2>
 
 <p>To use ZHighCharts, a valid Highcharts license is required. 
-Note the use of Highcharts is **free **for non-profit organizations, students, universities, public schools and non-commercial personal websites.
+Note the use of Highcharts is <strong>free</strong> for non-profit organizations, students, universities, public schools and non-commercial personal websites.
 More informations are available on this link: <a href="http://shop.highsoft.com/highcharts.html">http://shop.highsoft.com/highcharts.html</a>.</p>
 
 <h2>Summary</h2>
