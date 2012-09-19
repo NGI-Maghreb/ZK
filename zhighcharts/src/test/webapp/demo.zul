@@ -1,0 +1,94 @@
+<zk>
+	<style>
+	.windowStyle .z-window-embedded-cnt, 
+	             .z-window-embedded-body, 
+	             .z-window-overlapped-body, 
+	             .z-window-popup-body, 
+	             .z-window-highlighted-body, 
+	             .z-window-modal-body {
+	 	overflow:auto;
+	}
+
+	</style>
+
+	<window id="testWin" title="ZHighCharts Test Window" width="100%" height="800px"
+		vflex="true"
+		sclass="windowStyle"
+		use="ctrl.DemoWindowComposer">
+		<zhighcharts id="chart"
+			height="250px"
+			type="spline"
+			options="{marginRight: 140, marginLeft: 60,
+					marginBottom: 25,
+					zoomType: 'x'}"
+			tooltip="chartPopup"
+			/>
+		<!-- add a popup for tooltip with a label for element name-->
+		<popup id="chartPopup" sclass="chartPopupClosed">
+			<label id="name"/>
+		</popup>
+		<!-- a second chart -->
+		<!-- <zhighcharts id="chart2"
+			height="250px"
+			type="line"
+			options="{marginRight: 90, marginLeft: 40,
+					marginBottom: 25,marginTop: 0, 
+					inverted: true,
+					zoomType: 'y'
+					}"
+			tooltip="chartPopup2"
+			/>-->
+		<!-- add a popup for tooltip with a label for element name-->
+		<!-- <popup id="chartPopup2" sclass="chartPopupClosed">
+			<label id="name2"/>
+		</popup>-->
+		<hbox>
+			<separator spacing="20px"/>
+			<!-- a pie chart -->
+			<zhighcharts id="chart3"
+				height="250px"
+				width="500px"
+				type="pie"
+				options="{marginRight: 130, marginTop: 50,marginBottom: 15}"
+				/>
+			<!-- <chart id="jaugeS" width="200" height="200" paneColor="#ffffff" type="dial" /> -->
+			<zgauge id="speedGauge"	height="150px"
+				width="150px" value="150"
+				options="{label:'vitesse',min:0,max:240,unitsLabel:' km/h',majorTicks: 9,
+						bands: [{color: 'rgba(255,255,0,0.5)', from: 110, to: 140 },
+						{color: 'rgba(255,0,0,0.5)', from: 140, to: 240 }]}"
+				
+			/>
+			<vbox>
+				<label value="Dashboard" 
+				style="font-family: 'Lucida Grande', 'Lucida Sans Unicode'
+				, Verdana, Arial, Helvetica, sans-serif;font-size:16px;color:#3E576F;fill:#3E576F;"/>
+				<hbox>
+					<button id="valueControl" label="+ 10" 
+					onClick="testWin.controlValue();"/>
+					<button id="styleControl" label="style" 
+					onClick="testWin.controlStyle();"/>
+				</hbox>
+				<zgauge id="fuelGauge"	height="100px"
+					width="100px" value="0.5"
+					options="{label:'fuel',unitsLabel:' l',min:0,max:50,majorTicks: 3, minorTicks: 1,bands:[
+						{color: 'rgba(255,255,255,0.2)', from: 12.5, to: 25 },
+						{color: 'rgba(255,255,255,0.4)', from: 25, to: 37.5 },
+						{color: 'rgba(255,255,255,0.8)', from: 37.5, to: 50 }]}"
+					
+				/>
+				<button id="addPoint" label="add point" 
+				onClick="testWin.addPoints();"/>
+			</vbox>
+			<zgauge id="rpmGauge"	height="150px"
+				width="150px" value="2000"
+				options="{label:'tr/min',min:0,max:8000,
+				majorTicks: 9,
+				bands: [{color: 'rgba(0,255,0,0.3)', from: 2000, to: 4000 },
+						{color: 'rgba(255,100,0,0.5)', from: 6000, to: 7000 },
+						{color: 'rgba(255,0,0,0.5)', from: 7000, to: 8000 }]}"
+			/>
+			<image id="map" width="300px" height="300px"/>
+		</hbox>
+	</window>
+</zk>

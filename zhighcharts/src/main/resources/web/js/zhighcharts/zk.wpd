@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	ZK Widget Package Definition
+-->
+<package name="zhighcharts" language="xul/html" depends="zul,zul.grid,zul.wgt" >
+
+	<!-- javascript files -->
+	<script src="lib/highchart/highcharts.js"></script>
+	<script src="lib/highchart/exporting.js"></script>
+	<script src="lib/highchart/highcharts-more.js"></script>
+	<script src="lib/gauge/gauge.min.js"></script>
+	<script src="lib/gauge/jquery.gauge.min.js"></script>
+	<!-- widgets -->
+	<widget name="ZHighCharts" />
+	<widget name="ZGauge" />
+</package>

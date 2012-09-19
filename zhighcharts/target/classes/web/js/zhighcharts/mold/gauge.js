@@ -1,0 +1,1 @@
+function(a){var c=this.getZclass(),b=this.uuid;a.push("<div><canvas ",'id="',b,'" height="',this._height,'" width="',this._width,'">');a.push("</canvas></div>")};
