@@ -12,7 +12,7 @@ Demonstrations and other stuff are available on this link: [http://zhighcharts.a
 
 ## Download
 
-See [Downloads section](https://github.com/NGI-Maghreb/ZK/downloads) to download the latest version of ZHighCharts.
+See [Releases section](https://github.com/NGI-Maghreb/ZK/releases/) to download the latest version of ZHighCharts.
 
 ## Licence
 * [GPL](https://github.com/NGI-Maghreb/ZK/blob/master/zhighcharts/zkdoc/COPYING)
