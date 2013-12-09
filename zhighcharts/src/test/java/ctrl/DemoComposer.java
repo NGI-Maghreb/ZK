@@ -183,9 +183,33 @@ public class DemoComposer extends Window implements EventListener {
 	    //================================================================================
 
 		chartComp = (ZHighCharts) getFellow("chartComp");
-		chartComp.setTitle("Monthly Average Temperature");
-		chartComp.setSubTitle("Source: WorldClimate.com");
+//		chartComp.setTitle("Monthly Average Temperature");
+//		chartComp.setSubTitle("Source: WorldClimate.com");
+		
+		chartComp.setTitleOptions("{" +
+					"style:{" +
+						"color: 'red'," +
+						"fontSize: '20px'" +
+					"}, " +
+					"text : 'Monthly Average Temperature'" +
+				"}");
+		chartComp.setSubtitleOptions("{" +
+				"style:{" +
+					"color: 'green'," +
+					"fontSize: '12px'" +
+				"}, " +
+				"text : 'Source: WorldClimate.com'" +
+			"}");
+	
+		
 		chartComp.setType("line");
+		chartComp.setExporting("{" +
+					"enableImages:true," + //Whether to enable images in the export. 
+										   //Including image point markers, background images etc
+					"filename:'myChartname'," + //The filename, without extension, to use for the exported chart.
+					"url:'http://localhost:8080/highcharts-export/Highcharts-Chart-Export'," +//Batik Server
+					"width:2000" + //The pixel width of charts exported to PNG or JPG. . Defaults to 800.
+				"}");
 		chartComp.setXAxisTitle("Months");
 		chartComp.setxAxisOptions("{" +
 					"categories: [" +
@@ -203,7 +227,7 @@ public class DemoComposer extends Window implements EventListener {
 						"'Dec'" +
 					"]" +
 				"}");
-		chartComp.setYAxisTitle("Temperature (°C)");
+		chartComp.setYAxisTitle("Temperature (Â°C)");
 		chartComp.setyAxisOptions("{" +
 					"plotLines: [" +
 					"{" +
@@ -223,7 +247,7 @@ public class DemoComposer extends Window implements EventListener {
 		chartComp.setPlotOptions("{" +
 					"series:{" +
 						"dataLabels:{" +
-							"formatter: function (){return this.y +'°C';}," + 
+							"formatter: function (){return this.y +'Â°C';}," + 
 							"enabled: true" +
 						"}" +
 					"}" +
@@ -231,7 +255,7 @@ public class DemoComposer extends Window implements EventListener {
 
 		chartComp.setTooltipFormatter("function formatTooltip(obj){ " +
 					"return '<b>'+ obj.series.name +'</b>" +
-					"<br/>'+ obj.x +': '+ obj.y +'°C';" +
+					"<br/>'+ obj.x +': '+ obj.y +'Â°C';" +
 				"}");
 		
 		chartComp.setModel(dataChartModel);
@@ -700,13 +724,13 @@ public class DemoComposer extends Window implements EventListener {
 		chartComp6.setyAxisOptions("{" +
 					"labels: {" +
 						"formatter: function() {" +
-							"return this.value + '°';" +
+							"return this.value + 'Â°';" +
 						"}" +
 					"}," +
 					"lineWidth: 2" +
 				"}");
 		chartComp6.setTooltipFormatter("function formatTooltip(obj){" +
-					"return ''+obj.x +' km: '+ obj.y +'°C';" +
+					"return ''+obj.x +' km: '+ obj.y +'Â°C';" +
 				"}");
 		chartComp6.setPlotOptions("{" +
 					"spline: {" +
@@ -763,7 +787,7 @@ public class DemoComposer extends Window implements EventListener {
 		chartComp7.setyAxisOptions("{" +
 					"labels: {" +
 						"formatter: function() {" +
-							"return this.value +'°';" +
+							"return this.value +'Â°';" +
 						"}" +
 					"}" +
 				"}");
@@ -2027,7 +2051,7 @@ public class DemoComposer extends Window implements EventListener {
 		chartComp24.setTitle("Average Monthly Weather Data for Tokyo");
 		chartComp24.setSubTitle("Source: WorldClimate.com");
 		chartComp24.setxAxisOptions("{" +
-					"categories: [" + //Légende de l'axe X
+					"categories: [" + //lÃ©gende de l'axe X
 						"'Jan', " +
 						"'Feb', " +
 						"'Mar', " +
@@ -2047,19 +2071,19 @@ public class DemoComposer extends Window implements EventListener {
 					"{" + // Primary yAxis
 						"labels: {" +
 							"formatter: function() {" +
-								"return this.value +'°C';" + //Format de la légende ex: 15°c
+								"return this.value +'Â°C';" + //Format de la lÃ©gende ex: 15Â°C
 							"}," +
 							"style: {" +
-								"color: '#89A54E'" + //Couleur de la légende
+								"color: '#89A54E'" + //Couleur de la lÃ©gende
 							"} " +
 						"}," +
 						"title: {" +
-							"text: 'Temperature'," + //Titre de la légende
+							"text: 'Temperature'," + //Titre de la lÃ©gende
 							"style: { " +
-								"color: '#89A54E'" + //couleur du titre de la légende
+								"color: '#89A54E'" + //couleur du titre de la lÃ©gende
 							"}" +
 						"}," +
-						"opposite: true" + //Mettre au côté droit de l'écran
+						"opposite: true" + //Mettre au cÃ´tÃ© droit de l'Ã©cran
 					"}," +
 					"{" + // Secondary yAxis
 						"title: {" +
@@ -2123,7 +2147,7 @@ public class DemoComposer extends Window implements EventListener {
 		style.put("color", "#89A54E");//Series chart color
 		style.put("type", "spline");//Series type
 		style.put("yAxis", 0);// associate the series to a specified yAxis (here 0)
-		style.put("units", "°C");
+		style.put("units", "Â°C");
 		chartComp24.setSeriesOptions("Temperature", style); 
 		
 		dataChartModel24.addValue("Temperature", 0, 7.0);//January (month 0) Temperature is 7 deges
@@ -2218,7 +2242,7 @@ public class DemoComposer extends Window implements EventListener {
 		Map Axis0Style = new HashMap(); //Style Creation
 		Axis0Style.put("color", "#89A54E");
 		Map Axis0Labels = new HashMap(); //Labels
-		Axis0Labels.put("formatter", "function() {return this.value +'°C';}");
+		Axis0Labels.put("formatter", "function() {return this.value +'Â°C';}");
 		Axis0Labels.put("style", Axis0Style);
 		Map Axis0Title = new HashMap();// title
 		Axis0Title.put("text", "Temperature");
@@ -2232,19 +2256,19 @@ public class DemoComposer extends Window implements EventListener {
  		*	"{" + // Primary yAxis
 				"labels: {" +
 					"formatter: function() {" +
-						"return this.value +'°C';" + //Format de la légende ex: 15°c
+						"return this.value +'Â°C';" + //Format de la lÃ©gende ex: 15Â°c
 					"}," +
 					"style: {" +
-						"color: '#89A54E'" + //Couleur de la légende
+						"color: '#89A54E'" + //Couleur de la lÃ©gende
 					"} " +
 				"}," +
 				"title: {" +
-					"text: 'Temperature'," + //Titre de la légende
+					"text: 'Temperature'," + //Titre de la lÃ©gende
 					"style: { " +
-						"color: '#89A54E'" + //couleur du titre de la légende
+						"color: '#89A54E'" + //couleur du titre de la lÃ©gende
 					"}" +
 				"}," +
-				"opposite: true" + //Mettre au côté droit de l'écran
+				"opposite: true" + //Mettre au cÃ´tÃ© droit de l'Ã©cran
 			"}," +
 		 * 
 		 */
@@ -2307,7 +2331,7 @@ public class DemoComposer extends Window implements EventListener {
 		style.put("color", "#89A54E");
 		style.put("type", "spline");
 		style.put("yAxis", 0);
-		style.put("units", "°C");
+		style.put("units", "Â°C");
 		chartComp37.setSeriesOptions("Temperature", style); 
 		
 		dataChartModel37.addValue("Temperature", 0, 7.0);
@@ -3137,7 +3161,7 @@ public class DemoComposer extends Window implements EventListener {
 							"max: 360, " +
 							"labels: { " +
 								"formatter: function () { " +
-									"return this.value + '°'; " +
+									"return this.value + 'Â°'; " +
 								"} " +
 							"} " +
 						"}");

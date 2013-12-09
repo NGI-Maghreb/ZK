@@ -1,6 +1,6 @@
 (function () {
 
-	//JSON CUSTOM FUNCTIONS
+	//Custom implementation of JSON.stringify -> MyStringify
 	
     var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
     escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
@@ -212,7 +212,7 @@
 	        return str('', {'': value});
 	    };
 	    
-    //END OF JSON CUSTOM FUNCTIONS	
+    //END OF CUSTOM JSON FUNCTIONS
 	
 	/**
 	 * Overwrites obj1's values with obj2's and adds obj2's if non existent in obj1
@@ -289,11 +289,15 @@ zhighcharts.ZHighCharts = zk.$extends(zul.wgt.Div, {
 	_title: null, // Title
 	_tooltip: null, // tooltip
 	_tooltipOptions: null, // tooltip options
+	_titleOptions: null, // titleOptions options
+	_subtitleOptions: null, // subtitleOptions options
 	_xAxisTitle: null, // xAxis title text
 	_yAxisTitle: null, // yAxis title text
 	_xPlotBands: null, // xAxis PlotBands
 	_yPlotBands: null, // yAxis PlotBands
 	_series: null,
+	_exportURL: null, //URL of highcharts export server
+	_exporting: null, //URL of highcharts export server
 	_pane: null, //for polar charts and angular gauges
 	_pointClickCallback: null,
 	_clickCallback: null,
@@ -788,10 +792,23 @@ zhighcharts.ZHighCharts = zk.$extends(zul.wgt.Div, {
 		},
 		tooltipOptions: function() {
 		},	
+		titleOptions: function() {
+		},	
+		subtitleOptions: function() {
+		},	
 		plotOptions: function() {
 		},	
 		pane: function() {
 		},	
+		exportURL: function() {
+			if(this.desktop && this.chart) {
+				// updated UI here.
+				this.chart.exporting.url = this._exportURL;
+				this.chart.redraw();
+			}
+		},
+		exporting: function() {
+		},
 		labels: function() {
 			if(this.desktop && this.chart) {
 				// updated UI here.
@@ -805,14 +822,14 @@ zhighcharts.ZHighCharts = zk.$extends(zul.wgt.Div, {
 		title: function() { // this function will be called after setTitle() .
 			if(this.desktop && this.chart) {
 				// updated UI here.
-				this.chart.title.text = this._title;
+				// this.chart.title.text = this._title;
 			}
 		},
 		subtitle: function() { // this function will be called after setTitle() .
 			if(this.desktop && this.chart) {
 				// updated UI here.
-				this.chart.subtitle.text = this._subtitle;
-				this.chart.redraw();
+				// this.chart.subtitle.text = this._subtitle;
+				// this.chart.redraw();
 			}
 		},
 		pointClickCallback: function() {
@@ -829,10 +846,11 @@ zhighcharts.ZHighCharts = zk.$extends(zul.wgt.Div, {
 				
 		// prepare tooltip formatter function
 		// first give a standard one
-		var strfun = null,series,xPlotBands,yPlotBands,xAxis,yAxis,tooltipOptions,
+		var strfun = null,series,xPlotBands,yPlotBands,xAxis,yAxis,tooltipOptions,titleOptions,subtitleOptions,
 			legend = {},
 			pane = {},
 			plotOptions = {},
+			exporting = {},
 			strdlf;
 		// initialize series
 		try {
@@ -861,7 +879,7 @@ zhighcharts.ZHighCharts = zk.$extends(zul.wgt.Div, {
 			zk.error('evalJSON xAxis options:' + this._xAxisOptions 
 					+' failed reason: ' + err);
 		}
-		
+
 		try {
 			yAxis = jq.evalJSON(MyStringify(jq.evalJSON(this._yAxisOptions)));
 		} catch (err) {
@@ -874,10 +892,37 @@ zhighcharts.ZHighCharts = zk.$extends(zul.wgt.Div, {
 			tooltipOptions = jq.evalJSON(MyStringify(jq.evalJSON(this._tooltipOptions)));
 		} catch (err) {
 			console.error('evalJSON tooltipOptions failed reason: ' + err);
-			zk.error('evalJSON yAxis tooltipOptions: ' + this._yAxisOptions 
+			zk.error('evalJSON tooltipOptions: ' + this._tooltipOptions
 					+' failed reason: ' + err);
 		}
-
+		try {
+			titleOptions = jq.evalJSON(MyStringify(jq.evalJSON(this._titleOptions)));
+		} catch (err) {
+			console.error('evalJSON titleOptions failed reason: ' + err);
+			zk.error('evalJSON titleOptions: ' + this._titleOptions
+					+' failed reason: ' + err);
+		}
+		try {
+			subtitleOptions = jq.evalJSON(MyStringify(jq.evalJSON(this._subtitleOptions)));
+		} catch (err) {
+			console.error('evalJSON subtitleOptions failed reason: ' + err);
+			zk.error('evalJSON subtitleOptions: ' + this._subtitleOptions
+					+' failed reason: ' + err);
+		}
+		try {
+			exporting = jq.evalJSON(MyStringify(jq.evalJSON(this._exporting)));
+		} catch (err) {
+			console.error('evalJSON _exporting failed reason: ' + err);
+			zk.error('evalJSON _exporting: ' + this._exporting 
+					+' failed reason: ' + err);
+		}		
+		
+		if (exporting == undefined)
+			exporting = new Object();
+		if (exporting && this._exportURL && exporting.url == undefined) {
+			exporting.url = this._exportURL;
+		}
+		
 		
 		if (xAxis == undefined)
 			xAxis = new Object();
@@ -935,10 +980,25 @@ zhighcharts.ZHighCharts = zk.$extends(zul.wgt.Div, {
 						+' failed reason: ' + err);
 			}
 		}
-		
+
 		if (tooltipOptions == null ){
 			tooltipOptions = new Object();
 		}
+		if (titleOptions == null ){
+			titleOptions = new Object();
+		}
+
+		if (titleOptions && this._title && titleOptions.text == undefined) {
+			titleOptions.text = this._title;
+		}
+		if (subtitleOptions == null ){
+			subtitleOptions = new Object();
+		}
+
+		if (subtitleOptions && this._subtitle && subtitleOptions.text == undefined) {
+			subtitleOptions.text = this._subtitle;
+		}
+		
 		if(this._tooltipFormatter)
 			tooltipOptions.formatter = function() { 
 		    	 	return formatTooltip(this);
@@ -1021,17 +1081,25 @@ zhighcharts.ZHighCharts = zk.$extends(zul.wgt.Div, {
 		// add events callback to Y plotBands
 		this._addBandEvents(yPlotBands);
 		
+		//Force UTC
+		Highcharts.setOptions({
+		    global: {
+		        useUTC: true
+		    }
+		    //chart: this.chartOptions
+		});
+				
 		// now create the chart itself
 		this.chart = new Highcharts.Chart({
 			credits: { enabled: false
 			},
+			
 			chart: this.chartOptions,
-			title: {
-				text: this._title
-			},
-			subtitle: {
-				text: this._subtitle
-			},
+			
+			title: titleOptions,
+			subtitle: subtitleOptions,
+			
+			exporting : exporting,
 			xAxis: xAxis,
 			
 			yAxis: yAxis,
@@ -1043,6 +1111,8 @@ zhighcharts.ZHighCharts = zk.$extends(zul.wgt.Div, {
 			plotOptions: plotOptions,
 			series: series
 			});
+		
+//		console.log(this);
 				
 	},
 	
@@ -1119,7 +1189,6 @@ zhighcharts.ZHighCharts = zk.$extends(zul.wgt.Div, {
 	
 	getZclass: function () {
 		return this._zclass != null ? this._zclass: "z-ZHighCharts";
-	},
-	
+	}
 });
 })();

@@ -54,10 +54,14 @@ public class ZHighCharts extends Div implements EventListener {
 	private String plotOptions; // for global chart plot options
 	private String _pane; // for polar charts and angular gauges
 	private String tooltipOptions;
+	private String titleOptions;
+	private String subtitleOptions;
 	private String _yAxisTitle;
 	private String _xAxisTitle;
 	private String _tooltipFormatter;
-	
+	private String _exportURL = "http://export.highcharts.com";//Default URL
+	private String _exporting = null;
+
 	private LinkedList seriesList;
 	private Map<Comparable,Object> seriesOptions = new HashMap<Comparable,Object>();
 	private String xAxisOptions = null;
@@ -399,6 +403,42 @@ public class ZHighCharts extends Div implements EventListener {
 		}
 	}
 
+
+	/**
+	 * @return the titleOptions
+	 */
+	public String getTitleOptions() {
+		return titleOptions;
+	}
+
+	/**
+	 * @param titleOptions the titleOptions to set
+	 */
+	public void setTitleOptions(String titleOptions) {
+		if (!Objects.equals(this.titleOptions, titleOptions)) {
+			this.titleOptions = titleOptions;
+			smartUpdate("titleOptions", this.titleOptions);
+		}
+	}
+
+
+	/**
+	 * @return the subtitleOptions
+	 */
+	public String getSubtitleOptions() {
+		return subtitleOptions;
+	}
+
+	/**
+	 * @param subtitleOptions the subtitleOptions to set
+	 */
+	public void setSubtitleOptions(String subtitleOptions) {
+		if (!Objects.equals(this.subtitleOptions, subtitleOptions)) {
+			this.subtitleOptions = subtitleOptions;
+			smartUpdate("subtitleOptions", this.subtitleOptions);
+		}
+	}
+
 	public String getTitle() {
 		return _title;
 	}
@@ -540,6 +580,23 @@ public class ZHighCharts extends Div implements EventListener {
 	}
 
 	/**
+	 * @return the exportURL
+	 */
+	public String getExportURL() {
+		return _exportURL;
+	}
+
+	/**
+	 * @param exportURL the exportURL to set
+	 */
+	public void setExportURL(String exportURL) {
+		if (!Objects.equals(this._exportURL, exportURL)) {
+			this._exportURL = exportURL;
+			smartUpdate("exportURL", this._exportURL);
+		}
+	}
+
+	/**
 	 * @return the tooltipFormatter
 	 */
 	public String getTooltipFormatter() {
@@ -555,7 +612,7 @@ public class ZHighCharts extends Div implements EventListener {
 			smartUpdate("tooltipFormatter", this._tooltipFormatter);
 		}
 	}
-
+	
 	
 
 	/**
@@ -626,19 +683,22 @@ public class ZHighCharts extends Div implements EventListener {
 		render(renderer, "title", _title);
 		render(renderer, "tooltipFormatter", _tooltipFormatter);
 		render(renderer, "subtitle", _subTitle);
-		render(renderer, "type", _type);
 		render(renderer, "xAxisTitle", _xAxisTitle);
 		render(renderer, "yAxisTitle", _yAxisTitle);
 		render(renderer, "xAxisOptions", xAxisOptions);
 		render(renderer, "yAxisOptions", yAxisOptions);
 		render(renderer, "options", _options);
 		render(renderer, "tooltipOptions", tooltipOptions);
+		render(renderer, "titleOptions", titleOptions);
+		render(renderer, "subtitleOptions", subtitleOptions);
 		render(renderer, "plotOptions", plotOptions);
 		render(renderer, "legend", _legend);
 		render(renderer, "pointClickCallback", pointClickCallback);
 		render(renderer, "clickCallback", clickCallback);
 		render(renderer, "pane", _pane);
-
+		render(renderer, "exportURL", _exportURL);
+		render(renderer, "exporting", _exporting);
+			
 		if (model != null && modelList == null) {// single model
 			render(renderer, "series",getJSONSeries(modelToJsonList(getModel())));
 		} else {
@@ -669,6 +729,10 @@ public class ZHighCharts extends Div implements EventListener {
 		if (getyBandModel() != null) {
 			render(renderer, "yPlotBands", getJSONBands(bandModelToJsonList(getyBandModel())));
 		}
+		
+
+		render(renderer, "type", _type);
+		
 		modelRendered = true;
 	}
 
@@ -832,19 +896,48 @@ public class ZHighCharts extends Div implements EventListener {
 					list.add(jData);					
 				}
 			} else if(_type.startsWith("stackcolumn")){		//Draw StackedColumnChart 
-				// TODO rework this
-				seriesList = new LinkedList();
-				XYModel tempModel = (XYModel)model;
-				for(int i = 0, nSeries = tempModel.getSeries().size(); i < nSeries; i++){
-					Comparable series = tempModel.getSeries(i);					
-					JSONObject jData = new JSONObject();
-					jData.put("horizontalField", series);
-					jData.put("_xAxisTitle", tempModel.getX(series, 0));
-					jData.put("_yAxisTitle", tempModel.getY(series, 0));
-					list.add(jData);
+				
+				if  (model instanceof XYModel) {
+										
+					XYModel xyModel = (XYModel) model;
+					boolean found = false;
+					ExtXYModel extModel = null;
+					if (model instanceof ExtXYModel) {
+						extModel = (ExtXYModel) model;
+					}
+					for (int j = 0, nSeries = xyModel.getSeries().size(); j < nSeries; j++) {
+						Comparable series = xyModel.getSeries(j);
+						LinkedList dataList = new LinkedList();
+						Map<String, Object> serieMap = new HashMap<String, Object>();
+						for (int i = 0, dataCount = xyModel.getDataCount(series); i < dataCount; i++) {
+							String json;
+							if (xyModel.getX(series, i) != null && xyModel.getY(series, i) != null) {
+								if (inverted)
+									json = "[" + xyModel.getX(series, i) + "," + xyModel.getY(series, i) +  "]";
+								else
+									json = "[" + xyModel.getX(series, i) + "," + xyModel.getY(series, i) +  "]";
+								
+								dataList.add(json);
+							}
+						}
+						serieMap.put("name", series.toString());
+						serieMap.put("stack", 410);
+						serieMap.put("data", dataList);
+
+						// add series options
+						Map options = getSeriesOptions(series);
+						if (options != null) {
+							serieMap.put("options", options);
+						}
+						list.add(serieMap);
+					}
 				}
+				
+				//Because there is no such type called stackcolumn, thats why
+				_type = "column";
 			}
 		};
+		
 		return list;
 	}
 	
@@ -889,6 +982,10 @@ public class ZHighCharts extends Div implements EventListener {
 			    	String jsonOptions = JSONObject.toJSONString(options);
 			    	jsonOptions = jsonOptions.substring(1, jsonOptions.length()-1);
 			    	sb.append(jsonOptions + ",");
+			    }
+			    if(serieMap.get("stack") != null){
+			    	int stack = (Integer) serieMap.get("stack");
+			    	sb.append("stack:" + stack + ",");
 			    }
 			    if (name != null)
 			    	sb.append("name:'" + name + "'},");
@@ -1070,6 +1167,24 @@ public class ZHighCharts extends Div implements EventListener {
 			invalidate();		//Always redraw
 		}
 	}
+	
+	/**
+	 * @return the exporting
+	 */
+	public String getExporting() {
+		return _exporting;
+	}
+
+	/**
+	 * @param exporting the exporting to set
+	 */
+	public void setExporting(String exporting) {
+		if (!Objects.equals(_exporting, exporting)) {
+			this._exporting = exporting;
+			smartUpdate("exporting", _exporting);
+		}
+	}
+	
 
 	/**
 	 * @return the pane
