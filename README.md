@@ -23,17 +23,32 @@ More information are available here: [Highcharts JS Licence](http://shop.highsof
 ### 0.3
 * Update HighCharts to 3.0.7
 * add setExporting method to set [exporting](http://api.highcharts.com/highcharts#exporting) options
- ```
-chartComp.setExporting("{enableImages:true,filename:'myChartname',url:'http://localhost:8080/highcharts-export/Highcharts-Chart-Export',width:2000"}");
- ```
+
+		chartComp.setExporting("{"+
+			"enableImages:true,"+
+			"filename:'myChartname',"+
+			"url:'http://www.abc.com',"+
+			"width:2000"+
+		"}");
 * add setTitleOptions method to set [title](http://api.highcharts.com/highcharts#title) options
- ```
-chartComp.setTitleOptions("{style:{color: 'red',fontSize: '20px'},text : 'Monthly Average Temperature'}"); 
-```
+
+		chartComp.setTitleOptions("{" +
+			"style:{" +
+				"color: 'red'," +
+				"fontSize: '20px'" +
+			"}, " +
+			"text : 'Monthly Average Temperature'" +
+		"}");
 * add setSubtitleOptions method to set [subtitle](http://api.highcharts.com/highcharts#subtitle) options
- ```
-chartComp.setSubtitleOptions("{style:{color: 'green',fontSize: '12px'},text : 'Source: WorldClimate.com'}");
- ```
+		
+		chartComp.setSubtitleOptions("{" +
+			"style:{" +
+				"color: 'green'," +
+				"fontSize: '12px'" +
+			"}, " +
+			"text : 'Source: WorldClimate.com'" +
+		"}");
+ 
 ### 0.2
 * Initial commit
 
